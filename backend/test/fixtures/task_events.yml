@@ -1,0 +1,11 @@
+# Read about fixtures at https://api.rubyonrails.org/classes/ActiveRecord/FixtureSet.html
+
+one:
+  task: one
+  event_type: MyString
+  metadata: 
+
+two:
+  task: two
+  event_type: MyString
+  metadata: 
