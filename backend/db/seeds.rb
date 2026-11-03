@@ -8,6 +8,10 @@
 #     MovieGenre.find_or_create_by!(name: genre_name)
 #   end
 
+# Production runs this file on every start. Sample data only goes into an empty table,
+# so a task the user deleted or renamed does not come back.
+return unless Task.none?
+
 today = Date.current
 
 [

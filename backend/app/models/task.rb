@@ -32,7 +32,7 @@ class Task < ApplicationRecord
     sorted =
       case column
       when "priority"
-        in_order_of(:priority, direction == "asc" ? PRIORITY_ORDER : PRIORITY_ORDER.reverse)
+        in_order_of(:priority, direction == "desc" ? PRIORITY_ORDER : PRIORITY_ORDER.reverse)
       when "due_date"
         order(arel_table[:due_date].public_send(direction).nulls_last)
       when "title"

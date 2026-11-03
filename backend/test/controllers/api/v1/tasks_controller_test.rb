@@ -136,16 +136,16 @@ module Api
         assert_equal tasks(:staff_training).id, ordered_ids.first
       end
 
-      test "index sorts by priority ascending as high, medium, low" do
+      test "index sorts by priority ascending as low, medium, high" do
         get api_v1_tasks_path, params: { sort: "priority", direction: "asc" }
 
-        assert_equal %w[high high medium medium medium low low], returned_priorities
+        assert_equal %w[low low medium medium medium high high], returned_priorities
       end
 
-      test "index sorts by priority descending as low, medium, high" do
+      test "index sorts by priority descending as high, medium, low" do
         get api_v1_tasks_path, params: { sort: "priority", direction: "desc" }
 
-        assert_equal %w[low low medium medium medium high high], returned_priorities
+        assert_equal %w[high high medium medium medium low low], returned_priorities
       end
 
       test "index sorts by due_date ascending with empty dates last" do
