@@ -21,7 +21,10 @@ class Task < ApplicationRecord
   private
 
   def record_created_event
-    task_events.create!(event_type: "created")
+    task_events.create!(
+      event_type: "created",
+      metadata: slice(:title, :category, :priority, :status, :due_date)
+    )
   end
 
   def record_updated_event

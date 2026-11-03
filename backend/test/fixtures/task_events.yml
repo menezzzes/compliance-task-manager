@@ -1,11 +1,31 @@
 # Read about fixtures at https://api.rubyonrails.org/classes/ActiveRecord/FixtureSet.html
 
-one:
-  task: one
-  event_type: MyString
-  metadata: 
+cra_exam_prep_created:
+  task: cra_exam_prep
+  event_type: created
+  metadata:
+    title: Prepare CRA exam public file
+    category: cra
+    priority: high
+    status: pending
+    due_date: "<%= 30.days.from_now.to_date %>"
 
-two:
-  task: two
-  event_type: MyString
-  metadata: 
+fair_lending_policy_created:
+  task: fair_lending_policy
+  event_type: created
+  created_at: <%= 5.days.ago %>
+  metadata:
+    title: Update fair_lending policy references
+    category: fair_lending
+    priority: medium
+    status: pending
+    due_date: "<%= 5.days.ago.to_date %>"
+
+fair_lending_policy_completed:
+  task: fair_lending_policy
+  event_type: completed
+  created_at: <%= 1.day.ago %>
+  metadata:
+    status:
+      - pending
+      - completed
