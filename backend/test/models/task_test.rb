@@ -54,6 +54,44 @@ class TaskTest < ActiveSupport::TestCase
     assert_includes task.errors[:category], "is not included in the list"
   end
 
+  test "rejects a due date that is not a date" do
+    [ "abc", "2026-02-30", 12345, true ].each do |value|
+      task = Task.new(title: "File HMDA LAR", due_date: value)
+
+      assert_not task.valid?, "expected #{value.inspect} to be rejected"
+      assert_includes task.errors[:due_date], "is not a valid date"
+    end
+  end
+
+  test "accepts a valid, empty or missing due date" do
+    [ "2027-03-01", "", " ", nil ].each do |value|
+      assert Task.new(title: "File HMDA LAR", due_date: value).valid?, "expected #{value.inspect} to be accepted"
+    end
+  end
+
+  # Overdue
+
+  test "overdue? is true only for pending tasks with a past due date" do
+    assert Task.new(status: "pending", due_date: Date.yesterday).overdue?
+
+    assert_equal false, Task.new(status: "pending", due_date: Date.current).overdue?
+    assert_equal false, Task.new(status: "pending", due_date: Date.tomorrow).overdue?
+    assert_equal false, Task.new(status: "pending", due_date: nil).overdue?
+    assert_equal false, Task.new(status: "completed", due_date: Date.yesterday).overdue?
+  end
+
+  test "overdue scope matches overdue?" do
+    Task.create!(title: "Due today", due_date: Date.current)
+
+    assert_equal Task.all.select(&:overdue?).map(&:id).sort, Task.overdue.pluck(:id).sort
+    assert_equal [ tasks(:hmda_lar_review).id ], Task.overdue.pluck(:id)
+  end
+
+  test "as_json includes overdue" do
+    assert_equal true, tasks(:hmda_lar_review).as_json["overdue"]
+    assert_equal false, tasks(:cra_exam_prep).as_json["overdue"]
+  end
+
   # Associations
 
   test "destroying a task destroys its events" do
