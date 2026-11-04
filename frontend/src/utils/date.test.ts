@@ -1,5 +1,5 @@
 import { describe, expect, it } from 'vitest'
-import { formatDueDate } from './date'
+import { daysBetween, formatDueDate, formatTimestamp } from './date'
 
 describe('formatDueDate', () => {
   it('formats a date as "Mmm D, YYYY", without a leading zero on the day', () => {
@@ -56,4 +56,56 @@ describe('formatDueDate', () => {
       expect(formatDueDate('2026-01-01')).toBe('Jan 1, 2026')
     },
   )
+})
+
+describe('daysBetween', () => {
+  it.each([
+    ['2026-11-04', '2026-11-04', 0],
+    ['2026-11-04', '2026-11-05', 1],
+    ['2026-11-04', '2026-11-01', -3],
+    ['2026-10-31', '2026-11-01', 1],
+    ['2026-12-31', '2027-01-01', 1],
+    ['2028-02-28', '2028-03-01', 2],
+    ['2026-03-07', '2026-03-09', 2],
+    ['2026-11-01', '2026-11-02', 1],
+  ])('counts from %s to %s as %i', (from, to, expected) => {
+    expect(daysBetween(from, to)).toBe(expected)
+  })
+
+  it('reads years below 100 as written', () => {
+    expect(daysBetween('0026-11-04', '2026-11-04')).toBe(730485)
+  })
+
+  it.each(['', 'not-a-date', '2026-13-01', '2026-02-30', '2026-11-03T10:00:00Z'])(
+    'returns null for %j',
+    (value) => {
+      expect(daysBetween(value, '2026-11-04')).toBeNull()
+      expect(daysBetween('2026-11-04', value)).toBeNull()
+    },
+  )
+})
+
+describe('formatTimestamp', () => {
+  it('shows the local date and time as "Mmm D, YYYY, h:mm AM/PM"', () => {
+    expect(formatTimestamp(new Date(2026, 10, 3, 17, 53).toISOString())).toBe('Nov 3, 2026, 5:53 PM')
+    expect(formatTimestamp(new Date(2026, 0, 9, 0, 5).toISOString())).toBe('Jan 9, 2026, 12:05 AM')
+  })
+
+  it.runIf(new Date('2026-11-04T01:30:00Z').getTimezoneOffset() === 180)(
+    'converts UTC to the time zone of São Paulo',
+    () => {
+      expect(formatTimestamp('2026-11-04T01:30:00.000Z')).toBe('Nov 3, 2026, 10:30 PM')
+    },
+  )
+
+  it.runIf(new Date('2026-11-04T01:30:00Z').getTimezoneOffset() === 600)(
+    'converts UTC to the time zone of Honolulu',
+    () => {
+      expect(formatTimestamp('2026-11-04T01:30:00.000Z')).toBe('Nov 3, 2026, 3:30 PM')
+    },
+  )
+
+  it('returns an unreadable value as it came', () => {
+    expect(formatTimestamp('not-a-date')).toBe('not-a-date')
+  })
 })

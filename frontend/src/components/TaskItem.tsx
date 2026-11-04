@@ -2,10 +2,12 @@ import { taskElementId } from '../hooks/useLeavingTasks'
 import { CATEGORY_LABELS, PRIORITY_LABELS, STATUS_LABELS } from '../types'
 import type { Task } from '../types'
 import { formatDueDate } from '../utils/date'
+import { DueBadge } from './DueBadge'
 
 export interface TaskActions {
   onToggleStatus: (task: Task) => void
   onEdit: (task: Task) => void
+  onShowHistory: (task: Task) => void
   onDelete: (task: Task) => void
 }
 
@@ -15,7 +17,15 @@ interface TaskItemProps extends TaskActions {
   leaving: boolean
 }
 
-export function TaskItem({ task, toggling, leaving, onToggleStatus, onEdit, onDelete }: TaskItemProps) {
+export function TaskItem({
+  task,
+  toggling,
+  leaving,
+  onToggleStatus,
+  onEdit,
+  onShowHistory,
+  onDelete,
+}: TaskItemProps) {
   const completed = task.status === 'completed'
   const toggleLabel = completed ? 'Reopen' : 'Mark as complete'
   const classNames = ['task', completed && 'task-completed', leaving && 'task-leaving'].filter(Boolean)
@@ -39,11 +49,7 @@ export function TaskItem({ task, toggling, leaving, onToggleStatus, onEdit, onDe
         <span className="task-due">
           {task.due_date ? `Due: ${formatDueDate(task.due_date)}` : 'No due date'}
         </span>
-        {task.overdue && (
-          <span className="tag tag-overdue">
-            <span aria-hidden="true">⚠</span> Overdue
-          </span>
-        )}
+        <DueBadge task={task} />
       </div>
 
       <div className="task-actions">
@@ -63,6 +69,15 @@ export function TaskItem({ task, toggling, leaving, onToggleStatus, onEdit, onDe
           onClick={() => onEdit(task)}
         >
           Edit
+        </button>
+        <button
+          className="button button-small"
+          type="button"
+          aria-label={`History: ${task.title}`}
+          aria-disabled={toggling}
+          onClick={() => onShowHistory(task)}
+        >
+          History
         </button>
         <button
           className="button button-small"

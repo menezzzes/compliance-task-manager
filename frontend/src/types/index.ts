@@ -27,7 +27,7 @@ export interface TaskEvent {
   id: number
   task_id: number
   event_type: TaskEventType
-  metadata: Record<string, unknown>
+  metadata: Record<string, unknown> | null
   created_at: string
 }
 
@@ -66,4 +66,19 @@ export const CATEGORY_LABELS: Record<Category, string> = {
   complaints: 'Complaints',
   marketing_compliance: 'Marketing Compliance',
   other: 'Other',
+}
+
+export const EVENT_TYPE_LABELS: Record<TaskEventType, string> = {
+  created: 'Created',
+  updated: 'Updated',
+  completed: 'Completed',
+}
+
+export const TASK_FIELD_LABELS: Record<string, string> = {
+  title: 'Title',
+  description: 'Description',
+  category: 'Category',
+  priority: 'Priority',
+  status: 'Status',
+  due_date: 'Due date',
 }

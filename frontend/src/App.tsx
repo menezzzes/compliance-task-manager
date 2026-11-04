@@ -8,6 +8,7 @@ import { FilterBar } from './components/FilterBar'
 import { Pagination } from './components/Pagination'
 import { StatusTabs } from './components/StatusTabs'
 import { TaskFormModal } from './components/TaskFormModal'
+import { TaskHistoryPanel } from './components/TaskHistoryPanel'
 import { TaskList } from './components/TaskList'
 import { TaskListSkeleton } from './components/TaskListSkeleton'
 import { Toast } from './components/Toast'
@@ -37,6 +38,7 @@ function App() {
   const [formTarget, setFormTarget] = useState<FormTarget | null>(null)
   const [taskToDelete, setTaskToDelete] = useState<Task | null>(null)
   const [deleting, setDeleting] = useState(false)
+  const [historyTask, setHistoryTask] = useState<Task | null>(null)
   const [togglingIds, setTogglingIds] = useState<number[]>([])
   const { toast, showToast } = useToast()
 
@@ -83,6 +85,10 @@ function App() {
     }
   }
 
+  function handleShowHistory(task: Task) {
+    if (!togglingIds.includes(task.id)) setHistoryTask(task)
+  }
+
   async function handleConfirmDelete() {
     if (!taskToDelete) return
 
@@ -123,6 +129,7 @@ function App() {
           leavingIds={leavingIds}
           onToggleStatus={handleToggleStatus}
           onEdit={(task) => setFormTarget({ task })}
+          onShowHistory={handleShowHistory}
           onDelete={setTaskToDelete}
         />
       )
@@ -200,6 +207,8 @@ function App() {
           <p className="modal-task-name">{taskToDelete.title}</p>
         </ConfirmDialog>
       )}
+
+      {historyTask && <TaskHistoryPanel task={historyTask} onClose={() => setHistoryTask(null)} />}
 
       <Toast toast={toast} />
     </>
