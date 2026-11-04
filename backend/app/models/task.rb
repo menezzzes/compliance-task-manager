@@ -41,7 +41,6 @@ class Task < ApplicationRecord
         order(created_at: direction)
       end
 
-    # Tasks with equal values need a fixed order, or pages could repeat or skip them.
     sorted.order(id: direction)
   end
 
@@ -55,7 +54,6 @@ class Task < ApplicationRecord
 
   private
 
-  # Rails turns an unparseable date into nil, so the original value has to be checked.
   def due_date_must_be_a_date
     return if due_date_before_type_cast.to_s.blank? || due_date.is_a?(Date)
 

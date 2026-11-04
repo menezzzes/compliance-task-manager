@@ -1,5 +1,3 @@
-# Render Blueprint: describes the backend and its database.
-# Secrets are not stored here. Values marked sync: false are filled in on the Render dashboard.
 databases:
   - name: compliance-task-manager-db
     plan: free

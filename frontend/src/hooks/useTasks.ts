@@ -1,5 +1,6 @@
 import { useCallback, useEffect, useState } from 'react'
 import * as tasksApi from '../api/tasks'
+import { ApiError } from '../api/tasks'
 import type { TaskInput, TaskListParams } from '../api/tasks'
 import type { PaginationMeta, Task } from '../types'
 
@@ -16,11 +17,9 @@ export function useTasks(filters: TaskListParams = {}) {
   const [result, setResult] = useState(INITIAL_RESULT)
   const [reloadCount, setReloadCount] = useState(0)
 
-  // Compared as text, so a new object with the same filters does not trigger a request.
   const filtersKey = JSON.stringify(filters)
   const requestKey = `${reloadCount}:${filtersKey}`
 
-  // The current request is loading until its result arrives.
   const loading = result.requestKey !== requestKey
 
   useEffect(() => {
@@ -35,7 +34,6 @@ export function useTasks(filters: TaskListParams = {}) {
       })
       .catch((caught: unknown) => {
         if (signal.aborted) return
-        // The old list may not match the current filters, so it is not kept.
         const error = caught instanceof Error ? caught : new Error('Could not load the tasks.')
         setResult({ requestKey, data: [], meta: null, error })
       })
@@ -45,7 +43,14 @@ export function useTasks(filters: TaskListParams = {}) {
 
   const reload = useCallback(() => setReloadCount((count) => count + 1), [])
 
-  // Failures are thrown to the caller: a form needs them, and the list is still valid.
+  const rethrow = useCallback(
+    (error: unknown): never => {
+      if (error instanceof ApiError && error.status === 404) reload()
+      throw error
+    },
+    [reload],
+  )
+
   const createTask = useCallback(
     async (input: TaskInput) => {
       const task = await tasksApi.createTask(input)
@@ -56,20 +61,22 @@ export function useTasks(filters: TaskListParams = {}) {
   )
 
   const updateTask = useCallback(
-    async (id: number, input: Partial<TaskInput>) => {
-      const task = await tasksApi.updateTask(id, input)
+    async (id: number, input: Partial<TaskInput>, beforeReload?: (task: Task) => void | Promise<void>) => {
+      const task = await tasksApi.updateTask(id, input).catch(rethrow)
+      await beforeReload?.(task)
       reload()
       return task
     },
-    [reload],
+    [reload, rethrow],
   )
 
   const deleteTask = useCallback(
-    async (id: number) => {
-      await tasksApi.deleteTask(id)
+    async (id: number, beforeReload?: () => void | Promise<void>) => {
+      await tasksApi.deleteTask(id).catch(rethrow)
+      await beforeReload?.()
       reload()
     },
-    [reload],
+    [reload, rethrow],
   )
 
   return {

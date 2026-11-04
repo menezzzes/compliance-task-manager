@@ -1,5 +1,3 @@
-# Read about fixtures at https://api.rubyonrails.org/classes/ActiveRecord/FixtureSet.html
-
 cra_exam_prep_created:
   task: cra_exam_prep
   event_type: created

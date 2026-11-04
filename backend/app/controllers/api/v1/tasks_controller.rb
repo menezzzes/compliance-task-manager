@@ -13,7 +13,6 @@ module Api
         per_page = per_page_param
         total_pages = total.fdiv(per_page).ceil
 
-        # A page past the end skips the query, so a huge page cannot overflow OFFSET.
         records =
           if page > total_pages
             []

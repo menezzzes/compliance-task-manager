@@ -1,8 +1,6 @@
 require "test_helper"
 
 class TaskTest < ActiveSupport::TestCase
-  # Validations
-
   test "is valid with only a title" do
     assert Task.new(title: "File HMDA LAR").valid?
   end
@@ -69,8 +67,6 @@ class TaskTest < ActiveSupport::TestCase
     end
   end
 
-  # Overdue
-
   test "overdue? is true only for pending tasks with a past due date" do
     assert Task.new(status: "pending", due_date: Date.yesterday).overdue?
 
@@ -92,8 +88,6 @@ class TaskTest < ActiveSupport::TestCase
     assert_equal false, tasks(:cra_exam_prep).as_json["overdue"]
   end
 
-  # Associations
-
   test "destroying a task destroys its events" do
     task = tasks(:fair_lending_policy)
 
@@ -102,8 +96,6 @@ class TaskTest < ActiveSupport::TestCase
     end
     assert_not TaskEvent.exists?(task_id: task.id)
   end
-
-  # Callbacks
 
   test "creating a task records a created event with the initial values" do
     task = Task.create!(title: "File HMDA LAR", category: "hmda", priority: "high", due_date: "2027-03-01")

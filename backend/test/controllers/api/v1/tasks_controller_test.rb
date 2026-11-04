@@ -5,8 +5,6 @@ module Api
     class TasksControllerTest < ActionDispatch::IntegrationTest
       MISSING_ID = 0
 
-      # index
-
       test "index without filters returns all tasks" do
         get api_v1_tasks_path
 
@@ -107,8 +105,6 @@ module Api
         assert_equal false, overdue_by_id[tasks(:section_1071_data_audit).id]
       end
 
-      # index: sorting
-
       test "index sorts by newest first by default" do
         tasks(:staff_training).update_column(:created_at, 1.day.from_now)
         tasks(:cra_exam_prep).update_column(:created_at, 1.year.ago)
@@ -188,8 +184,6 @@ module Api
 
         assert_equal Task.count, seen.uniq.size
       end
-
-      # index: pagination
 
       test "index uses the default pagination" do
         insert_tasks(20)
@@ -277,8 +271,6 @@ module Api
         )
       end
 
-      # show
-
       test "show returns the task" do
         task = tasks(:cra_exam_prep)
 
@@ -300,8 +292,6 @@ module Api
 
         assert_not_found_json
       end
-
-      # create
 
       test "create with valid data returns 201 and saves the task" do
         assert_difference "Task.count", 1 do
@@ -350,8 +340,6 @@ module Api
           assert_equal false, response.parsed_body["overdue"]
         end
       end
-
-      # update
 
       test "update with valid data changes the task" do
         task = tasks(:cra_exam_prep)
@@ -409,8 +397,6 @@ module Api
         assert_not_found_json
       end
 
-      # destroy
-
       test "destroy returns 204 and removes the task" do
         task = tasks(:cra_exam_prep)
 
@@ -427,8 +413,6 @@ module Api
 
         assert_not_found_json
       end
-
-      # events
 
       test "events returns the task history with the newest first" do
         get events_api_v1_task_path(tasks(:fair_lending_policy))

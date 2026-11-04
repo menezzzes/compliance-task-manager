@@ -1,13 +1,8 @@
 #!/bin/bash -e
 
-# Render sets PORT. Thruster listens on HTTP_PORT and runs Puma on its own internal port.
 export HTTP_PORT="${PORT:-80}"
 
-# If running the rails server then create or migrate existing database
 if [ "${@: -2:1}" == "./bin/rails" ] && [ "${@: -1:1}" == "server" ]; then
-  # DEMO ONLY: Render's free plan has no terminal, so db:seed runs on every start.
-  # The seeds only create the sample tasks when the tasks table is empty.
-  # A real production app would not seed here.
   ./bin/rails db:prepare db:seed
 fi
 

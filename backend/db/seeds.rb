@@ -1,15 +1,3 @@
-# This file should ensure the existence of records required to run the application in every environment (production,
-# development, test). The code here should be idempotent so that it can be executed at any point in every environment.
-# The data can then be loaded with the bin/rails db:seed command (or created alongside the database with db:setup).
-#
-# Example:
-#
-#   ["Action", "Comedy", "Drama", "Horror"].each do |genre_name|
-#     MovieGenre.find_or_create_by!(name: genre_name)
-#   end
-
-# Production runs this file on every start. Sample data only goes into an empty table,
-# so a task the user deleted or renamed does not come back.
 return unless Task.none?
 
 today = Date.current
@@ -46,7 +34,6 @@ today = Date.current
   { title: "Schedule annual compliance training", category: "other", priority: "low", status: "pending", due_date: today + 30,
     description: "Book sessions on BSA, Fair Lending and complaint handling for all staff." }
 ].each do |attributes|
-  # The block only runs for a new task, so a second run creates no task and no event.
   Task.find_or_create_by!(title: attributes[:title]) do |task|
     task.assign_attributes(attributes)
   end

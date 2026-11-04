@@ -1,5 +1,3 @@
-# Read about fixtures at https://api.rubyonrails.org/classes/ActiveRecord/FixtureSet.html
-
 cra_exam_prep:
   title: Prepare CRA exam public file
   description: Gather branch lists, HMDA notices and public comments for the upcoming exam.
@@ -8,8 +6,6 @@ cra_exam_prep:
   category: cra
   due_date: <%= 30.days.from_now.to_date %>
 
-# Overdue: still pending and the due date has passed.
-# The "%" in the title is used by the search tests.
 hmda_lar_review:
   title: "Review 100% of HMDA LAR sample"
   description: Validate action taken dates and loan amounts before submission.
@@ -18,7 +14,6 @@ hmda_lar_review:
   category: hmda
   due_date: <%= 10.days.ago.to_date %>
 
-# The "_" in the title is used by the search tests.
 fair_lending_policy:
   title: Update fair_lending policy references
   description: Align the policy with the latest regulatory guidance.
@@ -27,7 +22,6 @@ fair_lending_policy:
   category: fair_lending
   due_date: <%= 5.days.ago.to_date %>
 
-# No due date on purpose: due_date is optional.
 section_1071_data_audit:
   title: Audit small business data collection for Section 1071
   description: Check that required data points are captured at application.

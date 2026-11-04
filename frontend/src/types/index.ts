@@ -17,7 +17,6 @@ export interface Task {
   status: Status
   priority: Priority
   category: Category
-  /** YYYY-MM-DD, or null when the task has no due date. */
   due_date: string | null
   overdue: boolean
   created_at: string
@@ -44,7 +43,6 @@ export interface PaginatedResponse<T> {
   meta: PaginationMeta
 }
 
-/** Body of a 422 response. The client turns it into the ApiValidationError class. */
 export interface ApiValidationError {
   errors: Record<string, string[]>
 }

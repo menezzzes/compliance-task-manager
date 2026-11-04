@@ -39,7 +39,6 @@ export interface RequestOptions {
   signal?: AbortSignal
 }
 
-/** 404s, server errors and network failures. status is undefined when no response arrived. */
 export class ApiError extends Error {
   readonly status?: number
 
@@ -50,7 +49,6 @@ export class ApiError extends Error {
   }
 }
 
-/** A 422 response, with the messages grouped by field. */
 export class ApiValidationError extends ApiError implements ApiValidationErrorBody {
   readonly errors: Record<string, string[]>
 
@@ -89,7 +87,6 @@ async function request<T>(path: string, init: RequestInit = {}): Promise<T> {
   }
 }
 
-/** Keeps AbortError as it is, so callers can tell a cancellation from a failure. */
 function wrapFailure(error: unknown, message: string, status?: number): unknown {
   if (error instanceof DOMException && error.name === 'AbortError') return error
   return new ApiError(message, status)
