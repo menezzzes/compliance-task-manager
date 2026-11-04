@@ -73,7 +73,7 @@ export function FilterBar({
         </select>
       </div>
 
-      <div className="field">
+      <div className="field field-sort">
         <label htmlFor="filter-sort">Sort by</label>
         <select id="filter-sort" value={query.sort} onChange={(event) => handleSortChange(event.target.value)}>
           {SORT_OPTIONS.map((option) => (

@@ -3,6 +3,7 @@ import { CATEGORY_LABELS, PRIORITY_LABELS, STATUS_LABELS } from '../types'
 import type { Task } from '../types'
 import { formatDueDate } from '../utils/date'
 import { DueBadge } from './DueBadge'
+import { Icon } from './Icon'
 
 export interface TaskActions {
   onToggleStatus: (task: Task) => void
@@ -47,6 +48,7 @@ export function TaskItem({
           Priority: {PRIORITY_LABELS[task.priority]}
         </span>
         <span className="task-due">
+          <Icon name="calendar" />
           {task.due_date ? `Due: ${formatDueDate(task.due_date)}` : 'No due date'}
         </span>
         <DueBadge task={task} />
@@ -63,7 +65,7 @@ export function TaskItem({
           {toggleLabel}
         </button>
         <button
-          className="button button-small"
+          className="button button-small button-quiet"
           type="button"
           aria-label={`Edit: ${task.title}`}
           onClick={() => onEdit(task)}
@@ -71,7 +73,7 @@ export function TaskItem({
           Edit
         </button>
         <button
-          className="button button-small"
+          className="button button-small button-quiet"
           type="button"
           aria-label={`History: ${task.title}`}
           aria-disabled={toggling}
@@ -80,7 +82,7 @@ export function TaskItem({
           History
         </button>
         <button
-          className="button button-small"
+          className="button button-small button-quiet-danger"
           type="button"
           aria-label={`Delete: ${task.title}`}
           onClick={() => onDelete(task)}

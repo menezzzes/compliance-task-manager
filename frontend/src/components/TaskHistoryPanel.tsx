@@ -3,6 +3,7 @@ import { ApiError } from '../api/tasks'
 import { useTaskEvents } from '../hooks/useTaskEvents'
 import type { Task } from '../types'
 import { HistoryEvent } from './HistoryEvent'
+import { Icon } from './Icon'
 import { Modal } from './Modal'
 
 interface TaskHistoryPanelProps {
@@ -31,6 +32,9 @@ export function TaskHistoryPanel({ task, onClose }: TaskHistoryPanelProps) {
     if (error) {
       return (
         <div className="message" role="alert">
+          <span className="message-icon message-icon-error">
+            <Icon name="alert" />
+          </span>
           <p className="message-title">Could not load history</p>
           {error instanceof ApiError && <p>{error.message}</p>}
           <button className="button" type="button" onClick={handleRetry}>
@@ -42,6 +46,9 @@ export function TaskHistoryPanel({ task, onClose }: TaskHistoryPanelProps) {
     if (events.length === 0) {
       return (
         <div className="message">
+          <span className="message-icon">
+            <Icon name="clock" />
+          </span>
           <p className="message-title">No history yet</p>
         </div>
       )

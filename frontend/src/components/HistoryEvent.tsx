@@ -5,7 +5,7 @@ export function HistoryEvent({ event }: { event: TaskEvent }) {
   const { typeLabel, occurredAt, initialValues, changes } = describeEvent(event)
 
   return (
-    <li className="history-event">
+    <li className={`history-event history-event-${event.event_type}`}>
       <div className="history-event-heading">
         <h3 className="history-event-type">{typeLabel}</h3>
         <time className="history-event-time" dateTime={event.created_at}>

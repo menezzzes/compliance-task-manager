@@ -7,7 +7,11 @@ export function TaskListSkeleton() {
         Loading tasks…
       </p>
       {PLACEHOLDER_ROWS.map((row) => (
-        <div key={row} className="skeleton-row" aria-hidden="true" />
+        <div key={row} className="skeleton-row" aria-hidden="true">
+          <span className="skeleton-line skeleton-line-title" />
+          <span className="skeleton-line skeleton-line-text" />
+          <span className="skeleton-line skeleton-line-tags" />
+        </div>
       ))}
     </div>
   )

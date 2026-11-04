@@ -147,7 +147,7 @@ function App() {
           <h1 className="app-title">Compliance Task Manager</h1>
           <button
             id={NEW_TASK_BUTTON_ID}
-            className="button"
+            className="button button-primary"
             type="button"
             onClick={() => setFormTarget({ task: null })}
           >
