@@ -1,4 +1,5 @@
 import type { PaginationMeta } from '../types'
+import { describePageRange } from '../utils/taskQuery'
 
 interface PaginationProps {
   meta: PaginationMeta
@@ -9,6 +10,7 @@ interface PaginationProps {
 export function Pagination({ meta, currentPage, onPageChange }: PaginationProps) {
   const canGoBack = currentPage > 1
   const canGoForward = currentPage < meta.total_pages
+  const pageRange = describePageRange(meta)
 
   return (
     <nav className="pagination" aria-label="Pagination">
@@ -20,9 +22,16 @@ export function Pagination({ meta, currentPage, onPageChange }: PaginationProps)
       >
         Previous
       </button>
-      <span className="pagination-label">
-        Page {meta.page} of {meta.total_pages}
-      </span>
+      <div className="pagination-label">
+        {pageRange && (
+          <>
+            <span>{pageRange}</span>
+            <span>
+              Page {meta.page} of {meta.total_pages}
+            </span>
+          </>
+        )}
+      </div>
       <button
         className="button"
         type="button"

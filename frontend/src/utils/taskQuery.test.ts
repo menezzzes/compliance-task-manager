@@ -1,10 +1,12 @@
 import { describe, expect, it } from 'vitest'
 import {
   DEFAULT_TASK_QUERY,
+  PAGE_SIZE,
   SORT_OPTIONS,
   changeTaskQuery,
   clampPage,
   clearTaskFilters,
+  describePageRange,
   hasActiveFilters,
   matchesTaskFilters,
   parseTaskQuery,
@@ -125,11 +127,12 @@ describe('toTaskListParams', () => {
       sort: 'created_at',
       direction: 'desc',
       page: 1,
+      per_page: 10,
     })
   })
 
   it('passes active filters through', () => {
-    expect(toTaskListParams(FULL_QUERY)).toEqual(FULL_QUERY)
+    expect(toTaskListParams(FULL_QUERY)).toEqual({ ...FULL_QUERY, per_page: PAGE_SIZE })
   })
 })
 
@@ -191,6 +194,38 @@ describe('clampPage', () => {
 
   it('returns page 1 when there are no results', () => {
     expect(clampPage(4, 0)).toBe(1)
+  })
+})
+
+describe('describePageRange', () => {
+  const meta = { total: 19, page: 1, per_page: 10, total_pages: 2 }
+
+  it('describes a full page', () => {
+    expect(describePageRange(meta)).toBe('Showing 1-10 of 19 tasks')
+  })
+
+  it('stops the last page at the total', () => {
+    expect(describePageRange({ ...meta, page: 2 })).toBe('Showing 11-19 of 19 tasks')
+  })
+
+  it('describes a last page that is exactly full', () => {
+    expect(describePageRange({ ...meta, total: 20, page: 2 })).toBe('Showing 11-20 of 20 tasks')
+  })
+
+  it('uses the singular for a single task', () => {
+    expect(describePageRange({ ...meta, total: 1, total_pages: 1 })).toBe('Showing 1-1 of 1 task')
+  })
+
+  it('describes a last page with one of many tasks', () => {
+    expect(describePageRange({ ...meta, total: 11, page: 2 })).toBe('Showing 11-11 of 11 tasks')
+  })
+
+  it('returns null for an empty list', () => {
+    expect(describePageRange({ ...meta, total: 0, total_pages: 0 })).toBeNull()
+  })
+
+  it('returns null for a page past the end', () => {
+    expect(describePageRange({ ...meta, total: 10, page: 2, total_pages: 1 })).toBeNull()
   })
 })
 

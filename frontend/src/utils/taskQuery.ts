@@ -1,6 +1,8 @@
 import type { SortDirection, TaskListParams, TaskSort } from '../api/tasks'
 import { CATEGORY_LABELS, PRIORITY_LABELS, STATUS_LABELS } from '../types'
-import type { Category, Priority, Status, Task } from '../types'
+import type { Category, PaginationMeta, Priority, Status, Task } from '../types'
+
+export const PAGE_SIZE = 10
 
 export interface TaskQuery {
   status: Status | ''
@@ -90,6 +92,7 @@ export function toTaskListParams(query: TaskQuery): TaskListParams {
     sort: query.sort,
     direction: query.direction,
     page: query.page,
+    per_page: PAGE_SIZE,
   }
 }
 
@@ -107,6 +110,14 @@ export function clearTaskFilters(query: TaskQuery): TaskQuery {
 
 export function clampPage(page: number, totalPages: number): number {
   return Math.max(1, Math.min(page, totalPages))
+}
+
+export function describePageRange({ page, per_page, total }: PaginationMeta): string | null {
+  const first = (page - 1) * per_page + 1
+  if (first > total) return null
+
+  const last = Math.min(page * per_page, total)
+  return `Showing ${first}-${last} of ${total} ${total === 1 ? 'task' : 'tasks'}`
 }
 
 export function matchesTaskFilters(task: Task, filters: TaskFilters): boolean {
