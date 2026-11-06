@@ -1,5 +1,6 @@
 import { act, fireEvent, screen, waitFor } from '@testing-library/react'
 import { describe, expect, it, vi } from 'vitest'
+import { WAKE_UP_HINT, WAKE_UP_HINT_DELAY_MS } from './components/TaskListSkeleton'
 import { makeTask } from './test/factories'
 import { mockApi } from './test/mockApi'
 import { findTaskTitle, renderApp, taskCard, taskTitle } from './test/appHelpers'
@@ -242,6 +243,25 @@ describe('list states', () => {
 
     await findTaskTitle(EXAM.title)
     expect(screen.queryByText('Loading tasks…')).not.toBeInTheDocument()
+  })
+
+  it('mentions the sleeping server when the first load is slow, and drops it once tasks arrive', async () => {
+    vi.useFakeTimers({ toFake: ['setTimeout', 'clearTimeout'] })
+    const api = mockApi({ tasks: TASKS })
+    const release = api.hold('GET', '/tasks')
+    renderApp()
+
+    act(() => vi.advanceTimersByTime(WAKE_UP_HINT_DELAY_MS - 1))
+    expect(screen.queryByText(WAKE_UP_HINT)).not.toBeInTheDocument()
+
+    act(() => vi.advanceTimersByTime(1))
+    expect(screen.getByText(WAKE_UP_HINT)).toBeInTheDocument()
+
+    vi.useRealTimers()
+    release()
+
+    await findTaskTitle(EXAM.title)
+    expect(screen.queryByText(WAKE_UP_HINT)).not.toBeInTheDocument()
   })
 
   it('keeps the previous list visible and marks it as busy during a reload', async () => {

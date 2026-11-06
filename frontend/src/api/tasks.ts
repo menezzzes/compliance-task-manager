@@ -8,8 +8,7 @@ import type {
   TaskEvent,
 } from '../types'
 import { toApiDate } from '../utils/date'
-
-const API_URL = (import.meta.env.VITE_API_URL || 'http://localhost:3000/api/v1').replace(/\/+$/, '')
+import { API_URL } from './config'
 
 export type TaskSort = 'created_at' | 'due_date' | 'priority' | 'title'
 export type SortDirection = 'asc' | 'desc'
@@ -60,6 +59,8 @@ export class ApiValidationError extends ApiError implements ApiValidationErrorBo
 }
 
 async function request<T>(path: string, init: RequestInit = {}): Promise<T> {
+  if (API_URL === null) throw new ApiError('The API URL is not configured.')
+
   let response: Response
   try {
     response = await fetch(`${API_URL}${path}`, {

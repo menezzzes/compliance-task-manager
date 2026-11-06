@@ -679,6 +679,18 @@ textarea {
   height: 1.5rem;
 }
 
+.skeleton-hint {
+  color: var(--color-text-muted);
+  font-size: var(--text-sm);
+  text-align: center;
+}
+
+.message-text {
+  max-width: 36rem;
+  color: var(--color-text-muted);
+  font-size: var(--text-md);
+}
+
 .message {
   display: flex;
   flex-direction: column;
